@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # --- PAGE CONFIGURATION ---
-st.set_page_config(page_title="GulfCoaster Nexus", layout="wide")
+st.set_page_config(page_title="GulfCoaster", page_icon="Logo.png",layout="wide")
 
 # --- 1. THE INTEGRATED BIOLOGICAL & GEOSPATIAL ENGINE ---
 @st.cache_data
@@ -59,7 +59,7 @@ def run_biological_nexus(region_name):
     baseline_2023 = birds_2021 * (1 + 0.024)**(2023 - 2021)
 
     # --- STEP 3: THE PREDICTION ENGINE ---
-    # To match your script: 
+    # To match  script: 
     # FWMP Capacity = Baseline * (FWMP Score / FWOA Score)
     # FWOA Capacity = Baseline * (FWOA Score / FWMP Score)
     
@@ -99,7 +99,7 @@ if 'view_state' not in st.session_state: st.session_state['view_state'] = 'initi
 
 # --- 4. SIDEBAR ---
 with st.sidebar:
-    st.image("GulfCoaster.png", use_container_width=True)
+    st.image("GulfCoaster.png", width=250)
     page = st.radio("Go to:", ["🏠 Dashboard", "📖 Methodology"])
     if st.button("🔄 Reset View"):
         st.session_state['view_state'] = 'initial'
@@ -107,10 +107,22 @@ with st.sidebar:
 
 # --- 5. MAIN CONTENT ---
 if page == "🏠 Dashboard":
-    st.markdown('<div class="main-title">🌊 GULFCOASTER Nexus</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Welcome</div>', unsafe_allow_html=True)
+    data = pd.DataFrame({
+    'latitude': [29.95, 30.05, 28.5, 27.8, 29.8], # New Orleans, Houston, offshore, Corpus, TX
+    'longitude': [-90.07, -94.0, -90.0, -97.3, -93.8]
     
+})  
+    lighthouse_data = pd.DataFrame({
+    'name': ['Biloxi Lighthouse'],
+    'lat': [30.39445],
+    'lon': [-88.90121]
+})
+
+
+
     if st.session_state['view_state'] == 'initial':
-        st.markdown('<div class="mock-map">🌍 GLOBAL VIEW: Entire Gulf Coast [Placeholder]</div>', unsafe_allow_html=True)
+        st.map(data, latitude='latitude', longitude='longitude', zoom=5)
         st.markdown("### ⚙️ Analysis Parameters")
         region = st.selectbox("Select Region", ['Select...', 'South Biloxi', 'Galveston'])
         if region == 'South Biloxi':
@@ -118,17 +130,13 @@ if page == "🏠 Dashboard":
             st.rerun()
     else:
         # EMERGENCY VIEW
-        st.markdown(f'''
-            <div class="mock-map" style="background-color:#b91c1c; color:white; font-size:3rem; font-weight:bold; text-align:center;">
-                ⚠️ WARNING: Nexus Emergency Detected<br>
-                <span style="font-size:1.5rem;">South Biloxi: American Oystercatcher at Risk</span>
-            </div>
-            ''', unsafe_allow_html=True)
+        st.map(lighthouse_data, color='#FF0000', size=40)
         
         with st.spinner("Calculating Biological & Geospatial Nexus..."):
             res = run_biological_nexus("South Biloxi")
 
         if res and "error" not in res:
+            st.error("⚠️ **BIOLOGICAL Nexus Emergency:** The American Oystercatcher population is at critical risk in this region.")
             # --- ROW 1: BIRD POPULATION ---
             st.subheader("🦅 Biological Nexus: Population Capacity")
             c1, c2 = st.columns(2)
