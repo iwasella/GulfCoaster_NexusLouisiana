@@ -1,0 +1,15 @@
+[theme]
+base="light"
+primaryColor="#3770cc" # Adding a primary color for buttons/links
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#E6E6FA" # Lavender
+textColor="#31333F"
+textColor="white"
+
+[theme.sidebar]
+backgroundColor="#013d07" # Green button colors 
+secondaryBackgroundColor="#E6E6FA" # Lavender 
+
+
+[theme.chat_input]
+backgroundColor="#FFFFFF"

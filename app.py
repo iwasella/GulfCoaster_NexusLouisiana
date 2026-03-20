@@ -3,6 +3,7 @@ import rasterio
 import numpy as np
 import pandas as pd
 import os
+import time
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="GulfCoaster", page_icon="Logo.png",layout="wide")
@@ -82,25 +83,21 @@ def run_biological_nexus(region_name):
 # --- 2. THE UI STYLING ---
 st.markdown("""
 <style>
+            .stAppHeader {
+        background-color: #275418; 
+    }
+            
 
     .stApp {
-        background-color: #3770cc; /* Fallback color if image fails to load */
-        background-image: url(coastline.jpg); 
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
-    .main-title { font-size: 3rem; color: #1E3A8A; font-weight: bold; text-align: center; margin-bottom: 0.5rem; }
+        background-color: #1c6399;   }
+    .main-title { font-size: 3rem; color: #FFFFF; text-align: center; margin-bottom: 0.5rem; }
     .sub-title { font-size: 1.2rem; color: #4B5563; text-align: center; margin-bottom: 2rem; }
-    .mock-map {
-        background-color: #d1d5db; border: 1px solid #9ca3af; border-radius: 12px;
-        display: flex; justify-content: center; align-items: center;
-        height: 400px; margin-bottom: 20px; font-size: 1.5rem; color: #1f2937;
-    }
+
             [data-testid="stSidebar"] {
         background: linear-gradient(0deg, #29a6ff, #275418);
         color: white;
+            
+     
     }
 </style>
 """, unsafe_allow_html=True)
@@ -118,7 +115,7 @@ with st.sidebar:
 
 # --- 5. MAIN CONTENT ---
 if page == "🏠 Dashboard":
-    st.markdown('<div class="main-title">Welcome</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Welcome and Good Afternoon, Ella.</div>', unsafe_allow_html=True)
     data = pd.DataFrame({
     'latitude': [29.95, 30.05, 28.5, 27.8, 29.8], # New Orleans, Houston, offshore, Corpus, TX
     'longitude': [-90.07, -94.0, -90.0, -97.3, -93.8]
@@ -145,8 +142,10 @@ if page == "🏠 Dashboard":
         
         with st.spinner("Calculating Biological & Geospatial Nexus..."):
             res = run_biological_nexus("South Biloxi")
+        
 
         if res and "error" not in res:
+
             st.error("⚠️ **BIOLOGICAL Nexus Emergency:** The American Oystercatcher population is at critical risk in this region.")
             # --- ROW 1: BIRD POPULATION ---
             st.subheader("🦅 Biological Nexus: Population Capacity")
@@ -161,3 +160,17 @@ if page == "🏠 Dashboard":
             c4.metric("FWMP Land", f"{res['fwmp_land_pct']}%", f"+{res['land_gain_mi']} sq mi saved")
             
             st.success(f"**Impact Summary:** The Master Plan prevents a **{res['fwoa_land_pct']}%** collapse by saving **{res['land_gain_mi']} square miles** of Biloxi shoreline.")
+            sentiment_mapping = ["one", "two", "three", "four", "five"]
+            selected = st.feedback("stars")
+            if selected is not None:
+                st.markdown(f"You selected {sentiment_mapping[selected]} star(s).")
+
+if page == "📖 Methodology":
+    messages = st.container(height=200)
+    if prompt := st.chat_input("Say something", accept_file=True,accept_audio=True,
+    file_type=["jpg", "jpeg", "png"],):
+        messages.chat_message("user").write(f"Ella: {prompt.text}")
+        with messages.chat_message("assistant", avatar="🦜"):
+            with st.spinner("Maurice is typing..."): # Optional: adds a loading spinner
+                time.sleep(2) 
+                st.write("Maurice: I love birds.")
