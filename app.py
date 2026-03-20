@@ -83,6 +83,7 @@ def run_biological_nexus(region_name):
 # --- 2. THE UI STYLING ---
 st.markdown("""
 <style>
+            
             .stAppHeader {
         background-color: #275418; 
     }
@@ -108,7 +109,7 @@ if 'view_state' not in st.session_state: st.session_state['view_state'] = 'initi
 # --- 4. SIDEBAR ---
 with st.sidebar:
     st.image("GulfCoaster.png", width=250)
-    page = st.radio("Go to:", ["🏠 Dashboard", "📖 Methodology"])
+    page = st.radio("Go to:", ["🏠 Dashboard", "🌊 GulfCoworkers","📚 Resources"])
     if st.button("🔄 Reset View"):
         st.session_state['view_state'] = 'initial'
         st.rerun()
@@ -131,8 +132,9 @@ if page == "🏠 Dashboard":
 
     if st.session_state['view_state'] == 'initial':
         st.map(data, latitude='latitude', longitude='longitude', zoom=5)
-        st.markdown("### ⚙️ Analysis Parameters")
-        region = st.selectbox("Select Region", ['Select...', 'South Biloxi', 'Galveston'])
+        st.markdown("### Analysis Parameters")
+        region = st.selectbox("Select Region", ['Select...', 'South Biloxi', 'Galveston', "Florida Keys", "Breton Island"])
+        Species = st.selectbox("Select Species", ['Select...', 'American Oystercatcher', 'Brown Pelican', "Blue Heron", "Caspian Tern"])
         if region == 'South Biloxi':
             st.session_state['view_state'] = 'active'
             st.rerun()
@@ -146,18 +148,20 @@ if page == "🏠 Dashboard":
 
         if res and "error" not in res:
 
-            st.error("⚠️ **BIOLOGICAL Nexus Emergency:** The American Oystercatcher population is at critical risk in this region.")
+            st.error("⚠️ **WARNING:** The American Oystercatcher population is at critical risk in this region.")
             # --- ROW 1: BIRD POPULATION ---
-            st.subheader("🦅 Biological Nexus: Population Capacity")
-            c1, c2 = st.columns(2)
-            c1.metric("FWOA (No Action)", f"~{res['pred_fwoa']} Birds", delta_color="inverse")
-            c2.metric("FWMP (Master Plan)", f"~{res['pred_fwmp']} Birds", f"+{res['bird_gain']} Net Gain")
+            with st.container(border=True):
+                st.subheader("Biological: Population Capacity")
+                c1, c2 = st.columns(2)
+                c1.metric("FWOA (No Action)", f"~{res['pred_fwoa']} Birds", delta_color="inverse")
+                c2.metric("FWMP (Master Plan)", f"~{res['pred_fwmp']} Birds", f"+{res['bird_gain']} Net Gain")
 
             # --- ROW 2: LAND GAIN ---
-            st.subheader("🗺️ Geospatial Nexus: Land Change")
-            c3, c4 = st.columns(2)
-            c3.metric("FWOA Land", f"{res['fwoa_land_pct']}%", f"{res['fwoa_land_mi']} sq mi", delta_color="off")
-            c4.metric("FWMP Land", f"{res['fwmp_land_pct']}%", f"+{res['land_gain_mi']} sq mi saved")
+            with st.container(border=True):
+                st.subheader("Geospatial: Land Change")
+                c3, c4 = st.columns(2)
+                c3.metric("FWOA Land", f"{res['fwoa_land_pct']}%", f"{res['fwoa_land_mi']} sq mi", delta_color="off")
+                c4.metric("FWMP Land", f"{res['fwmp_land_pct']}%", f"+{res['land_gain_mi']} sq mi saved")
             
             st.success(f"**Impact Summary:** The Master Plan prevents a **{res['fwoa_land_pct']}%** collapse by saving **{res['land_gain_mi']} square miles** of Biloxi shoreline.")
             sentiment_mapping = ["one", "two", "three", "four", "five"]
@@ -165,7 +169,8 @@ if page == "🏠 Dashboard":
             if selected is not None:
                 st.markdown(f"You selected {sentiment_mapping[selected]} star(s).")
 
-if page == "📖 Methodology":
+if page == "🌊 GulfCoworkers":
+    st.markdown('<div class="main-title">GulfWorkers Group Chat.</div>', unsafe_allow_html=True)
     messages = st.container(height=200)
     if prompt := st.chat_input("Say something", accept_file=True,accept_audio=True,
     file_type=["jpg", "jpeg", "png"],):
