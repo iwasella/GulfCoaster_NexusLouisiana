@@ -82,7 +82,15 @@ def run_biological_nexus(region_name):
 # --- 2. THE UI STYLING ---
 st.markdown("""
 <style>
-    .stApp { background-color: #3770cc; }
+
+    .stApp {
+        background-color: #3770cc; /* Fallback color if image fails to load */
+        background-image: url(coastline.jpg); 
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
     .main-title { font-size: 3rem; color: #1E3A8A; font-weight: bold; text-align: center; margin-bottom: 0.5rem; }
     .sub-title { font-size: 1.2rem; color: #4B5563; text-align: center; margin-bottom: 2rem; }
     .mock-map {
@@ -90,7 +98,10 @@ st.markdown("""
         display: flex; justify-content: center; align-items: center;
         height: 400px; margin-bottom: 20px; font-size: 1.5rem; color: #1f2937;
     }
-    [data-testid="stSidebar"] { background-color: #2c6930; color: white; }
+            [data-testid="stSidebar"] {
+        background: linear-gradient(0deg, #29a6ff, #275418);
+        color: white;
+    }
 </style>
 """, unsafe_allow_html=True)
 
